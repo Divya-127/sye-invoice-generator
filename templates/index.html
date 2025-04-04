@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shree Yamuna Enterprises - Invoice Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #2980b9;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #3498db;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+            margin-top: 20px;
+        }
+        .form-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+        .form-group {
+            flex: 1;
+            min-width: 250px;
+            margin-right: 15px;
+            margin-bottom: 10px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        textarea {
+            height: 80px;
+            resize: vertical;
+        }
+        button {
+            background-color: #2980b9;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #3498db;
+        }
+        .products-container {
+            margin-bottom: 15px;
+        }
+        .product-entry {
+            background-color: #f0f0f0;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border-left: 3px solid #3498db;
+        }
+        .product-controls {
+            text-align: right;
+            margin-top: 10px;
+        }
+        .btn-add {
+            background-color: #27ae60;
+        }
+        .btn-add:hover {
+            background-color: #2ecc71;
+        }
+        .btn-remove {
+            background-color: #e74c3c;
+            margin-left: 5px;
+        }
+        .btn-remove:hover {
+            background-color: #c0392b;
+        }
+        .btn-generate {
+            background-color: #2980b9;
+            font-size: 18px;
+            padding: 12px 24px;
+            display: block;
+            margin: 20px auto;
+        }
+        .json-output {
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .required::after {
+            content: "*";
+            color: red;
+            margin-left: 4px;
+        }
+        .add-new-btn {
+            background-color: #16a085;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+        .add-new-btn:hover {
+            background-color: #1abc9c;
+        }
+        .dropdown-with-add {
+            display: flex;
+            align-items: center;
+        }
+        .dropdown-with-add select {
+            flex: 1;
+        }
+        .custom-option {
+            background-color: #f1f1f1;
+            font-style: italic;
+        }
+        .company-logo {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .company-logo img {
+            max-width: 200px;
+            height: auto;
+        }
+        .copy-address {
+            background-color: #3498db;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Shree Yamuna Enterprises - Invoice Generator</h1>
+        <form id="invoiceForm">
+            <!-- Company Information (Fixed) -->
+            <div class="form-section">
+                <h2>Company Information</h2>
+                <div class="company-logo">
+                    <!-- You can add a logo here -->
+                    <!-- <img src="yamuna_logo.png" alt="Shree Yamuna Enterprises Logo"> -->
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Company Name</label>
+                        <input type="text" id="companyName" value="Shree Yamuna Enterprises" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>GSTIN</label>
+                        <input type="text" id="companyGstin" value="27ABCDE1234F1Z5" readonly>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Address</label>
+                        <textarea id="companyAddress" readonly>123 Industrial Area, Andheri East, Mumbai, Maharashtra - 400093</textarea>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Contact Number</label>
+                        <input type="text" id="companyContact" value="+91 9876543210" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="companyEmail" value="info@shreeyamuna.com" readonly>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bill To Information -->
+            <div class="form-section">
+                <h2>Bill To Information</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="required">Client Name</label>
+                        <div class="dropdown-with-add">
+                            <select id="billToNameSelect" required>
+                                <option value="">--Select Client--</option>
+                                <option value="custom">+ Add New Client</option>
+                            </select>
+                            <button type="button" id="addNewBillToBtn" class="add-new-btn">Add New</button>
+                        </div>
+                        <input type="text" id="billToName" style="display: none;" placeholder="Enter client name">
+                    </div>
+                    <div class="form-group">
+                        <label class="required">GSTIN</label>
+                        <input type="text" id="billToGstin" placeholder="e.g., 27FGHIJ5678K2Z6" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="required">Address</label>
+                        <textarea id="billToAddress" required></textarea>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="required">State</label>
+                        <select id="billToState" required>
+                            <option value="">--Select State--</option>
+                            <option value="Andhra Pradesh">Andhra Pradesh</option>
+                            <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                            <option value="Assam">Assam</option>
+                            <option value="Bihar">Bihar</option>
+                            <option value="Chhattisgarh">Chhattisgarh</option>
+                            <option value="Goa">Goa</option>
+                            <option value="Gujarat">Gujarat</option>
+                            <option value="Haryana">Haryana</option>
+                            <option value="Himachal Pradesh">Himachal Pradesh</option>
+                            <option value="Jharkhand">Jharkhand</option>
+                            <option value="Karnataka">Karnataka</option>
+                            <option value="Kerala">Kerala</option>
+                            <option value="Madhya Pradesh">Madhya Pradesh</option>
+                            <option value="Maharashtra">Maharashtra</option>
+                            <option value="Manipur">Manipur</option>
+                            <option value="Meghalaya">Meghalaya</option>
+                            <option value="Mizoram">Mizoram</option>
+                            <option value="Nagaland">Nagaland</option>
+                            <option value="Odisha">Odisha</option>
+                            <option value="Punjab">Punjab</option>
+                            <option value="Rajasthan">Rajasthan</option>
+                            <option value="Sikkim">Sikkim</option>
+                            <option value="Tamil Nadu">Tamil Nadu</option>
+                            <option value="Telangana">Telangana</option>
+                            <option value="Tripura">Tripura</option>
+                            <option value="Uttar Pradesh">Uttar Pradesh</option>
+                            <option value="Uttarakhand">Uttarakhand</option>
+                            <option value="West Bengal">West Bengal</option>
+                            <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+                            <option value="Chandigarh">Chandigarh</option>
+                            <option value="Dadra and Nagar Haveli and Daman and Diu">Dadra and Nagar Haveli and Daman and Diu</option>
+                            <option value="Delhi">Delhi</option>
+                            <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                            <option value="Ladakh">Ladakh</option>
+                            <option value="Lakshadweep">Lakshadweep</option>
+                            <option value="Puducherry">Puducherry</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="required">Contact Number</label>
+                        <input type="text" id="billToContact" placeholder="+91 1234567890" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ship To Information -->
+            <div class="form-section">
+                <h2>Ship To Information</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="required">Client Name</label>
+                        <div class="dropdown-with-add">
+                            <select id="shipToNameSelect" required>
+                                <option value="">--Select Client--</option>
+                                <option value="custom">+ Add New Client</option>
+                                <option value="same">Same as Bill To</option>
+                            </select>
+                            <button type="button" id="addNewShipToBtn" class="add-new-btn">Add New</button>
+                            <button type="button" id="copyBillToBtn" class="add-new-btn copy-address">Copy Bill To</button>
+                        </div>
+                        <input type="text" id="shipToName" style="display: none;" placeholder="Enter client name">
+                    </div>
+                    <div class="form-group">
+                        <label class="required">GSTIN</label>
+                        <input type="text" id="shipToGstin" placeholder="e.g., 27FGHIJ5678K2Z6" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="required">Address</label>
+                        <textarea id="shipToAddress" required></textarea>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="required">State</label>
+                        <select id="shipToState" required>
+                            <option value="">--Select State--</option>
+                            <option value="Andhra Pradesh">Andhra Pradesh</option>
+                            <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                            <option value="Assam">Assam</option>
+                            <option value="Bihar">Bihar</option>
+                            <option value="Chhattisgarh">Chhattisgarh</option>
+                            <option value="Goa">Goa</option>
+                            <option value="Gujarat">Gujarat</option>
+                            <option value="Haryana">Haryana</option>
+                            <option value="Himachal Pradesh">Himachal Pradesh</option>
+                            <option value="Jharkhand">Jharkhand</option>
+                            <option value="Karnataka">Karnataka</option>
+                            <option value="Kerala">Kerala</option>
+                            <option value="Madhya Pradesh">Madhya Pradesh</option>
+                            <option value="Maharashtra">Maharashtra</option>
+                            <option value="Manipur">Manipur</option>
+                            <option value="Meghalaya">Meghalaya</option>
+                            <option value="Mizoram">Mizoram</option>
+                            <option value="Nagaland">Nagaland</option>
+                            <option value="Odisha">Odisha</option>
+                            <option value="Punjab">Punjab</option>
+                            <option value="Rajasthan">Rajasthan</option>
+                            <option value="Sikkim">Sikkim</option>
+                            <option value="Tamil Nadu">Tamil Nadu</option>
+                            <option value="Telangana">Telangana</option>
+                            <option value="Tripura">Tripura</option>
+                            <option value="Uttar Pradesh">Uttar Pradesh</option>
+                            <option value="Uttarakhand">Uttarakhand</option>
+                            <option value="West Bengal">West Bengal</option>
+                            <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+                            <option value="Chandigarh">Chandigarh</option>
+                            <option value="Dadra and Nagar Haveli and Daman and Diu">Dadra and Nagar Haveli and Daman and Diu</option>
+                            <option value="Delhi">Delhi</option>
+                            <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                            <option value="Ladakh">Ladakh</option>
+                            <option value="Lakshadweep">Lakshadweep</option>
+                            <option value="Puducherry">Puducherry</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="required">Contact Number</label>
+                        <input type="text" id="shipToContact" placeholder="+91 1234567890" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Invoice Details -->
+            <div class="form-section">
+                <h2>Invoice Details</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="required">Invoice Number</label>
+                        <input type="text" id="billNumber" placeholder="e.g., INV-2025-0001" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="required">Date</label>
+                        <input type="date" id="invoiceDate" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>PO Number</label>
+                        <input type="text" id="poNumber" placeholder="e.g., PO-2025-123">
+                    </div>
+                    <div class="form-group">
+                        <label class="required">Transport Method</label>
+                        <input type="text" id="transport" placeholder="e.g., Road Transport" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Products -->
+            <div class="form-section">
+                <h2>Products</h2>
+                <div id="productsContainer" class="products-container">
+                    <!-- Product entries will be added here -->
+                    <div class="product-entry" data-index="0">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="required">Product Name</label>
+                                <select class="product-select" required>
+                                    <option value="">--Select Product--</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>HSN Code</label>
+                                <input type="text" class="product-hsn" readonly>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="required">Drum Size</label>
+                                <input type="text" class="product-drum-size" placeholder="e.g., 200L, 50L, N/A" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="required">Quantity</label>
+                                <input type="number" class="product-qty" min="1" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="required">Rate (₹)</label>
+                                <input type="number" class="product-rate" min="0" step="0.01" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-controls">
+                    <button type="button" id="addProduct" class="btn-add">+ Add Product</button>
+                </div>
+            </div>
+
+            <button type="button" id="generateBtn" class="btn-generate">Generate Invoice Data</button>
+        </form>
+
+        <div class="form-section">
+            <h2>Generated JSON</h2>
+            <p>Copy this data to use with your Python invoice generator:</p>
+            <pre id="jsonOutput" class="json-output">Your generated invoice data will appear here...</pre>
+        </div>
+    </div>
+
+    <script>
+document.addEventListener('DOMContentLoaded', function () {
+    let companyData, clientsData, productsData;
+
+    // Fetch data from backend
+    fetch('/data')
+        .then(response => response.json())
+        .then(data => {
+            companyData = data.company;
+            clientsData = data.clients;
+            productsData = data.products;
+
+            fillCompanyInfo(companyData);
+            populateClientDropdowns(clientsData);
+            populateProductDropdowns(productsData);
+        });
+
+    function fillCompanyInfo(company) {
+        document.getElementById('companyName').value = company.name;
+        document.getElementById('companyGstin').value = company.gstin;
+        document.getElementById('companyAddress').value = company.address;
+        document.getElementById('companyContact').value = company.contact;
+        document.getElementById('companyEmail').value = company.email;
+    }
+
+    function populateClientDropdowns(clients) {
+        const billToSelect = document.getElementById('billToNameSelect');
+        const shipToSelect = document.getElementById('shipToNameSelect');
+
+        clients.forEach(client => {
+            const option1 = new Option(client.name, client.name);
+            const option2 = new Option(client.name, client.name);
+            billToSelect.add(option1, billToSelect.lastChild);
+            shipToSelect.add(option2, shipToSelect.querySelector('option[value="same"]'));
+        });
+
+        // Auto-fill on selection
+        billToSelect.addEventListener('change', function () {
+            if (this.value === 'custom') {
+                document.getElementById('billToName').style.display = 'block';
+            } else {
+                const client = clients.find(c => c.name === this.value);
+                document.getElementById('billToName').style.display = 'none';
+                document.getElementById('billToGstin').value = client.gstin;
+                document.getElementById('billToAddress').value = client.address;
+                document.getElementById('billToContact').value = client.contact;
+                document.getElementById('billToState').value = client.state;
+            }
+        });
+
+        shipToSelect.addEventListener('change', function () {
+            if (this.value === 'custom') {
+                document.getElementById('shipToName').style.display = 'block';
+            } else if (this.value === 'same') {
+                document.getElementById('shipToName').style.display = 'none';
+                copyBillToShipTo();
+            } else {
+                const client = clients.find(c => c.name === this.value);
+                document.getElementById('shipToName').style.display = 'none';
+                document.getElementById('shipToGstin').value = client.gstin;
+                document.getElementById('shipToAddress').value = client.address;
+                document.getElementById('shipToContact').value = client.contact;
+                document.getElementById('shipToState').value = client.state;
+            }
+        });
+    }
+
+    function populateProductDropdowns(products) {
+        function fillSelect(select) {
+            products.forEach(p => {
+                const option = new Option(p.name, p.name);
+                select.add(option);
+            });
+
+            select.addEventListener('change', function () {
+                const product = products.find(p => p.name === this.value);
+                if (product) {
+                    const container = this.closest('.product-entry');
+                    container.querySelector('.product-hsn').value = product.hsn;
+                    container.querySelector('.product-drum-size').value = product.drum_size;
+                    container.querySelector('.product-rate').value = product.rate;
+                }
+            });
+        }
+
+        document.querySelectorAll('.product-select').forEach(fillSelect);
+    }
+
+    function copyBillToShipTo() {
+        const billName = document.getElementById('billToNameSelect').value === 'custom'
+            ? document.getElementById('billToName').value
+            : document.getElementById('billToNameSelect').value;
+
+        document.getElementById('shipToName').value = billName;
+        document.getElementById('shipToGstin').value = document.getElementById('billToGstin').value;
+        document.getElementById('shipToAddress').value = document.getElementById('billToAddress').value;
+        document.getElementById('shipToContact').value = document.getElementById('billToContact').value;
+        document.getElementById('shipToState').value = document.getElementById('billToState').value;
+    }
+
+    // Generate PDF via POST to /generate
+    document.getElementById('generateBtn').addEventListener('click', function () {
+        const billToName = document.getElementById('billToNameSelect').value === 'custom'
+            ? document.getElementById('billToName').value
+            : document.getElementById('billToNameSelect').value;
+
+        const shipToName = document.getElementById('shipToNameSelect').value === 'custom'
+            ? document.getElementById('shipToName').value
+            : (document.getElementById('shipToNameSelect').value === 'same'
+                ? billToName
+                : document.getElementById('shipToNameSelect').value);
+
+        const data = {
+            company: companyData,
+            bill_to: {
+                name: billToName,
+                gstin: document.getElementById('billToGstin').value,
+                address: document.getElementById('billToAddress').value,
+                state: document.getElementById('billToState').value,
+                contact: document.getElementById('billToContact').value
+            },
+            ship_to: {
+                name: shipToName,
+                gstin: document.getElementById('shipToGstin').value,
+                address: document.getElementById('shipToAddress').value,
+                state: document.getElementById('shipToState').value,
+                contact: document.getElementById('shipToContact').value
+            },
+            invoice: {
+                number: document.getElementById('billNumber').value,
+                date: document.getElementById('invoiceDate').value,
+                po_number: document.getElementById('poNumber').value,
+                transport: document.getElementById('transport').value
+            },
+            bank: {
+                bank_name: "State Bank of India",
+                account_name: "Shree Yamuna Enterprises",
+                account_number: "12345678901234",
+                ifsc_code: "SBIN0001234",
+                branch: "Andheri East, Mumbai"
+            },
+            products: Array.from(document.querySelectorAll('.product-entry')).map(entry => ({
+                name: entry.querySelector('.product-select').value,
+                hsn: entry.querySelector('.product-hsn').value,
+                drum_size: entry.querySelector('.product-drum-size').value,
+                quantity: parseInt(entry.querySelector('.product-qty').value),
+                rate: parseFloat(entry.querySelector('.product-rate').value)
+            }))
+        };
+
+        fetch('/generate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+        .then(res => res.blob())
+        .then(blob => {
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `${data.invoice.number}.pdf`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+        })
+        .catch(err => alert("Error generating invoice: " + err));
+    });
+});
+</script>
+
+</body>
+</html>
