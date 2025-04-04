@@ -3,13 +3,21 @@ from invoice_generator import InvoiceGenerator
 import io
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
+import json
+import os
 
 app = Flask(__name__)
 
 # Google Sheets setup
+# def get_gsheet():
+#     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
+#     creds = ServiceAccountCredentials.from_json_keyfile_name("credentials.json", scope)
+#     return gspread.authorize(creds)
+
 def get_gsheet():
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-    creds = ServiceAccountCredentials.from_json_keyfile_name("credentials.json", scope)
+    creds_json = json.loads(os.environ["GOOGLE_CREDENTIALS"])
+    creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_json, scope)
     return gspread.authorize(creds)
 
 # Load data from Google Sheet
