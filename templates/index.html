@@ -416,6 +416,9 @@
                                 <input type="number" class="product-rate" min="0" step="0.01" required>
                             </div>
                         </div>
+                        <div class="product-controls">
+                            <button type="button" class="btn-remove">Remove</button>
+                        </div>
                     </div>
                 </div>
                 <div class="product-controls">
@@ -532,6 +535,71 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('shipToContact').value = document.getElementById('billToContact').value;
         document.getElementById('shipToState').value = document.getElementById('billToState').value;
     }
+    function addRemoveHandler(entry) {
+            const removeBtn = entry.querySelector('.btn-remove');
+            if (removeBtn) {
+                removeBtn.onclick = function () {
+                    // Only remove if there's more than one product entry
+                    const container = document.getElementById('productsContainer');
+                    if (container.querySelectorAll('.product-entry').length > 1) {
+                        entry.remove();
+                    } else {
+                        // Optionally clear fields instead of removing the last entry
+                        entry.querySelector('.product-select').value = "";
+                        entry.querySelector('.product-hsn').value = "";
+                        entry.querySelector('.product-drum-size').value = "";
+                        entry.querySelector('.product-qty').value = "";
+                        entry.querySelector('.product-rate').value = "";
+                    }
+                };
+            }
+    }
+
+    document.getElementById('addProduct').addEventListener('click', function () {
+        const products = productsData || [];
+        const container = document.getElementById('productsContainer');
+        const lastEntry = container.querySelector('.product-entry:last-child');
+        const newIndex = container.querySelectorAll('.product-entry').length;
+        const newEntry = lastEntry.cloneNode(true);
+
+        newEntry.setAttribute('data-index', newIndex);
+        newEntry.querySelector('.product-select').value = "";
+        newEntry.querySelector('.product-hsn').value = "";
+        newEntry.querySelector('.product-drum-size').value = "";
+        newEntry.querySelector('.product-qty').value = "";
+        newEntry.querySelector('.product-rate').value = "";
+
+        // Reset and repopulate product dropdown
+        const select = newEntry.querySelector('.product-select');
+        select.innerHTML = '<option value="">--Select Product--</option>';
+        products.forEach(p => {
+            select.add(new Option(p.name, p.name));
+        });
+
+        select.addEventListener('change', function () {
+            const product = products.find(p => p.name === this.value);
+            if (product) {
+                const entry = this.closest('.product-entry');
+                entry.querySelector('.product-hsn').value = product.hsn;
+                entry.querySelector('.product-drum-size').value = product.drum_size;
+                entry.querySelector('.product-rate').value = product.rate;
+            } else {
+                const entry = this.closest('.product-entry');
+                entry.querySelector('.product-hsn').value = "";
+                entry.querySelector('.product-drum-size').value = "";
+                entry.querySelector('.product-rate').value = "";
+            }
+        });
+
+        // Add/remove handler for the new entry
+        addRemoveHandler(newEntry);
+
+        container.appendChild(newEntry);
+    });
+
+    // Add remove handler to the initial product entry
+    document.querySelectorAll('.product-entry').forEach(addRemoveHandler);
+
 
     // Generate PDF via POST to /generate
     document.getElementById('generateBtn').addEventListener('click', function () {
