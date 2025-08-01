@@ -57,14 +57,14 @@ class InvoiceGenerator:
 
     def amount_in_words(self, amount):
         try:
-            words = num2words(amount, lang='en_IN').replace(',', '').title()
-            rupees = int(amount)
-            paise = int(round((amount - rupees) * 100))
+            words = num2words(int(amount), lang='en_IN').replace(',', '').title()
+            # rupees = int(amount)
+            # paise = int(round((amount - rupees) * 100))
 
-            if paise > 0:
-                return f"{words} Rupees and {num2words(paise, lang='en_IN').title()} Paise Only"
-            else:
-                return f"{words} Rupees Only"
+            # if paise > 0:
+            #     return f"{words} Rupees and {num2words(paise, lang='en_IN').title()} Paise Only"
+            # else:
+            return f"{words} Rupees Only"
         except:
             # Fallback function in case num2words isn't available or fails
             def num_to_words(num):

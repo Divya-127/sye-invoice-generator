@@ -600,6 +600,12 @@ document.addEventListener('DOMContentLoaded', function () {
     // Add remove handler to the initial product entry
     document.querySelectorAll('.product-entry').forEach(addRemoveHandler);
 
+    function formatISODateToDMY(isoDate) {
+        if (!isoDate) return "";
+        let [year, month, day] = isoDate.split("-");
+        return `${day.padStart(2, '0')}/${month.padStart(2, '0')}/${year}`;
+    }
+
 
     // Generate PDF via POST to /generate
     document.getElementById('generateBtn').addEventListener('click', function () {
@@ -631,16 +637,16 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             invoice: {
                 number: document.getElementById('billNumber').value,
-                date: document.getElementById('invoiceDate').value,
+                date: formatISODateToDMY(document.getElementById('invoiceDate').value),
                 po_number: document.getElementById('poNumber').value,
                 transport: document.getElementById('transport').value
             },
             bank: {
-                bank_name: "State Bank of India",
+                bank_name: "Punjab National Bank",
                 account_name: "Shree Yamuna Enterprises",
                 account_number: "12345678901234",
-                ifsc_code: "SBIN0001234",
-                branch: "Andheri East, Mumbai"
+                ifsc_code: "PNB20001234",
+                branch: "Kandivali East, Mumbai"
             },
             products: Array.from(document.querySelectorAll('.product-entry')).map(entry => ({
                 name: entry.querySelector('.product-select').value,
