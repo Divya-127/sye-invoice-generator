@@ -143,7 +143,7 @@ class InvoiceGenerator:
         pdf.cell(col_width - 30, 4, self.company_info['email'], 0, 1, 'L')
         pdf.set_font('Arial', 'B', 9)
         pdf.set_x(10)
-        pdf.cell(30, 4, f"GSTIN:", 0, 0, 'L')
+        pdf.cell(30, 4, f"GSTIN/PAN Number:", 0, 0, 'L')
         pdf.cell(col_width - 30, 4, self.company_info['gstin'], 0, 1, 'L')
 
         # Invoice details - Right column
