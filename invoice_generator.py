@@ -143,7 +143,7 @@ class InvoiceGenerator:
         pdf.cell(col_width - 30, 4, self.company_info['email'], 0, 1, 'L')
         pdf.set_font('Arial', 'B', 9)
         pdf.set_x(10)
-        pdf.cell(30, 4, f"GSTIN/PAN Number:", 0, 0, 'L')
+        pdf.cell(30, 4, f"GSTIN:", 0, 0, 'L')
         pdf.cell(col_width - 30, 4, self.company_info['gstin'], 0, 1, 'L')
 
         # Invoice details - Right column
@@ -197,7 +197,7 @@ class InvoiceGenerator:
         pdf.cell(95, 4, self.bill_to['state'], 0, 1, 'L')
         pdf.cell(30, 4, 'Contact:', 0, 0, 'L')
         pdf.cell(65, 4, self.bill_to['contact'], 0, 1, 'L')
-        pdf.cell(30, 4, 'GSTIN:', 0, 0, 'L')
+        pdf.cell(30, 4, 'GSTIN/PAN Number:', 0, 0, 'L')
         pdf.cell(65, 4, self.bill_to['gstin'], 0, 1, 'L')
 
         # Ship to details
@@ -214,7 +214,7 @@ class InvoiceGenerator:
         pdf.cell(30, 4, 'Contact:', 0, 0, 'L')
         pdf.cell(65, 4, self.ship_to['contact'], 0, 1, 'L')
         pdf.set_xy(110, pdf.get_y())
-        pdf.cell(30, 4, 'GSTIN:', 0, 0, 'L')
+        pdf.cell(30, 4, 'GSTIN/PAN Number:', 0, 0, 'L')
         pdf.cell(65, 4, self.ship_to['gstin'], 0, 1, 'L')
 
         # Reset position to after both columns
