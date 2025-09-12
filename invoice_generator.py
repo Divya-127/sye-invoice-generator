@@ -170,6 +170,11 @@ class InvoiceGenerator:
             pdf.cell(40, 4, 'PO Number:', 0, 0, 'L')
             pdf.cell(55, 4, self.invoice_details['po_number'], 0, 1, 'L')
 
+        if self.invoice_details['batch_number']:
+            pdf.set_xy(105, pdf.get_y())
+            pdf.cell(40, 4, 'Batch Number:', 0, 0, 'L')
+            pdf.cell(55, 4, self.invoice_details['batch_number'], 0, 1, 'L')
+
         pdf.set_xy(105, pdf.get_y())
         pdf.cell(40, 4, 'Transport:', 0, 0, 'L')
         pdf.cell(55, 4, self.invoice_details['transport'], 0, 1, 'L')
