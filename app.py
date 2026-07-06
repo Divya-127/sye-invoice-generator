@@ -74,6 +74,7 @@ def generate():
     data = request.get_json()
 
     buffer = io.BytesIO()
+    print("Generating invoice with data:", data)
     invoice = InvoiceGenerator(
         company_info=data["company"],
         bill_to=data["bill_to"],
