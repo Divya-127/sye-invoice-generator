@@ -295,7 +295,7 @@ class InvoiceGenerator:
         pdf.set_text_color(*text_color)
         pdf.set_font('Arial', 'I', 10)
         pdf.ln(1)
-        pdf.cell(0, 5, f"Amount in words: {self.amount_in_words(self.totals['total'])}", 0, 1, 'L')
+        pdf.cell(0, 5, f"Amount in words: {self.amount_in_words(self.totals['rounded_total'])}", 0, 1, 'L')
 
         # Terms and Conditions - more compact
         pdf.ln(2)
