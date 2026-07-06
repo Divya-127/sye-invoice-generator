@@ -53,6 +53,10 @@ class InvoiceGenerator:
 
         totals['total'] = totals['subtotal'] + totals['cgst'] + totals['sgst'] + totals['igst']
 
+        # Round off calculations
+        totals['rounded_total'] = round(totals['total'])
+        totals['round_off'] = round(totals['rounded_total'] - totals['total'], 2)
+
         return totals
 
     def amount_in_words(self, amount):
@@ -277,6 +281,16 @@ class InvoiceGenerator:
         pdf.set_text_color(255, 255, 255)
         pdf.cell(total_width, 6, 'TOTAL', 1, 0, 'R', 1)  # Reduced height
         pdf.cell(amount_width, 6, f"{self.totals['total']:,.2f}", 1, 1, 'R', 1)
+
+        pdf.cell(total_width, 6, 'Round Off', 1, 0, 'R')
+        pdf.cell(amount_width, 6, f"{self.totals['round_off']:+.2f}", 1, 1, 'R')
+
+        pdf.set_font('Arial', 'B', 10)
+        pdf.set_fill_color(*header_color)
+        pdf.set_text_color(255, 255, 255)
+
+        pdf.cell(total_width, 6, 'Total(Rounded)', 1, 0, 'R', 1)
+        pdf.cell(amount_width, 6, f"{self.totals['rounded_total']:,.2f}", 1, 1, 'R', 1)
 
         pdf.set_text_color(*text_color)
         pdf.set_font('Arial', 'I', 10)
