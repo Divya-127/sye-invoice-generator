@@ -356,9 +356,10 @@ class InvoiceGenerator:
 
         # Save the PDF
         if isinstance(output_filename, io.BytesIO):
-            pdf_bytes = pdf.output()  # already bytes in fpdf2
-            output_filename.write(bytes(pdf_bytes))
-            output_filename.seek(0)  # so the caller can read from the start
+            pdf_data = pdf.output(dest="S")  # returns str in PyFPDF 1.7.2
+            output_filename.write(pdf_data.encode("latin1"))
+            output_filename.seek(0)
         else:
             pdf.output(output_filename)
+
         return output_filename
